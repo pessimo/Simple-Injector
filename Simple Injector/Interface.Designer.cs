@@ -90,6 +90,7 @@
             // 
             // FileDialog
             // 
+            this.FileDialog.Filter = "Dynamic Link Library (*.dll)| *.dll";
             this.FileDialog.InitialDirectory = "@\"C:\\\"";
             this.FileDialog.Title = "Select a DLL File";
             // 
