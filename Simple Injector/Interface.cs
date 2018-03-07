@@ -2,25 +2,27 @@
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
+using System;
 
 namespace Simple_Injector
 {
     public partial class Interface : Form
     {
-        private DataTable processTable = new DataTable("processTable");
+        private readonly DataTable _processTable = new DataTable("processTable");
 
         public Interface()
         {
             InitializeComponent();
         }
 
-        private void Interface_Load(object sender, System.EventArgs e)
+        private void Interface_Load(object sender, EventArgs e)
         {
             InitializeDataTable();
 
             // Set the datasource of the datagrid
 
-            ProcessDataGrid.DataSource = processTable;
+            ProcessDataGrid.DataSource = _processTable;
 
             PopulateDataTable();
 
@@ -29,22 +31,11 @@ namespace Simple_Injector
             ProcessDataGrid.Sort(ProcessDataGrid.Columns["Name"], ListSortDirection.Ascending);
         }
 
-        private void UploadDLLButton_Click(object sender, System.EventArgs e)
-        {
-            // Open a file dialog
-
-            FileDialog.ShowDialog();
-
-            // Get the file path of the chosen dll
-
-            var DLL = FileDialog.FileName;
-        }
-
         private void InitializeDataTable()
         {
             // Add columns to datatable
 
-            processTable.Columns.Add("Name", typeof(string));
+            _processTable.Columns.Add("Name", typeof(string));
         }
 
         private void PopulateDataTable()
@@ -53,11 +44,52 @@ namespace Simple_Injector
 
             var processes = Process.GetProcesses();
 
-            foreach(var process in processes)
+            foreach (var process in processes)
             {
-                processTable.Rows.Add(process.ProcessName);
+                _processTable.Rows.Add(process.ProcessName);
             }
 
-        }  
+        }
+
+        private void ProcessDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Get the process that has been chosen
+
+            var process = ProcessDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            // Set the text of SelectedProcessTextBox to the process name
+
+            SelectedProcessTextBox.Text = Convert.ToString(process.FormattedValue);
+        }
+
+        private void ChooseDLLButton_Click(object sender, EventArgs e)
+        {
+            // Open a file dialog
+
+            FileDialog.ShowDialog();
+
+            // Get the file path of the chosen dll
+
+            var dll = FileDialog.FileName;
+
+            // Set the text of DLLFileTextBox to the dll name
+
+            DLLFileTextBox.Text = Path.GetFileNameWithoutExtension(dll);
+        }
+
+        private void InjectDLLButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CloseAfterInjectCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AutoInjectCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
