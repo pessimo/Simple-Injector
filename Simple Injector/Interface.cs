@@ -4,12 +4,18 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace Simple_Injector
 {
     public partial class Interface : Form
     {
         private readonly DataTable _processTable = new DataTable("processTable");
+
+        private List<string> _processNames = new List<string>();
+        private List<int> _processIds = new List<int>();
+
+        private string dllPath;
 
         public Interface()
         {
@@ -46,6 +52,9 @@ namespace Simple_Injector
 
             foreach (var process in processes)
             {
+                _processNames.Add(process.ProcessName);
+                _processIds.Add(process.Id);
+
                 _processTable.Rows.Add(process.ProcessName);
             }
 
@@ -53,13 +62,14 @@ namespace Simple_Injector
 
         private void ProcessDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Get the process that has been chosen
+            // Get the process that has been clicked
 
             var process = ProcessDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
             // Set the text of SelectedProcessTextBox to the process name
 
             SelectedProcessTextBox.Text = Convert.ToString(process.FormattedValue);
+
         }
 
         private void ChooseDLLButton_Click(object sender, EventArgs e)
@@ -70,7 +80,7 @@ namespace Simple_Injector
 
             // Get the file path of the chosen dll
 
-            var dll = FileDialog.FileName;
+            var dll = dllPath = FileDialog.FileName;
 
             // Set the text of DLLFileTextBox to the dll name
 
@@ -79,7 +89,14 @@ namespace Simple_Injector
 
         private void InjectDLLButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // Get the chosen process
+
+            var processName = SelectedProcessTextBox.Text;
+
+            // Get the process id
+
+            var id = _processIds[_processNames.IndexOf(processName)];
+
         }
 
         private void CloseAfterInjectCheckBox_CheckedChanged(object sender, EventArgs e)
