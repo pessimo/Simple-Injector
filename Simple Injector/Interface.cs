@@ -13,6 +13,12 @@ namespace Simple_Injector
        
         private string _dllPath;
 
+        private bool _closeAfterInject;
+
+        private bool _autoInject;
+        
+        private Injector _injector;
+        
         public Interface()
         {
             InitializeComponent();
@@ -31,6 +37,10 @@ namespace Simple_Injector
             // Sort the processes
 
             ProcessDataGrid.Sort(ProcessDataGrid.Columns["Name"], ListSortDirection.Ascending);
+            
+            // Create an instance of Injector
+            
+            _injector = new Injector(LoadLibraryALabel, ProcessHandleLabel, AllocateMemoryLabel, WriteMemoryLabel, CreateRemoteThreadLabel);
         }
 
         private void InitializeDataTable()
@@ -63,6 +73,24 @@ namespace Simple_Injector
 
             SelectedProcessTextBox.Text = Convert.ToString(process.FormattedValue);
 
+            // If _autoInject is true and a dll has been chosen then inject
+            
+            if (_autoInject & DLLFileTextBox.Text.Length > 1)
+            {
+                // Get the chosen process
+                
+                var processName = SelectedProcessTextBox.Text;
+
+                _injector.Inject(processName, _dllPath);
+                
+                // Close the injector if _closeAfterInject is true
+            
+                if (_closeAfterInject)
+                {
+                    Application.Exit();
+                }
+            }
+
         }
 
         private void ChooseDLLButton_Click(object sender, EventArgs e)
@@ -78,6 +106,24 @@ namespace Simple_Injector
             // Set the text of DLLFileTextBox to the dll name
 
             DLLFileTextBox.Text = Path.GetFileNameWithoutExtension(dll);
+            
+            // If _autoInject is true and a dll has been chosen then inject
+            
+            if (_autoInject & SelectedProcessTextBox.Text.Length > 1)
+            {
+                // Get the chosen process
+                
+                var processName = SelectedProcessTextBox.Text;
+
+                _injector.Inject(processName, _dllPath);
+                
+                // Close the injector if _closeAfterInject is true
+            
+                if (_closeAfterInject)
+                {
+                    Application.Exit();
+                }
+            }
         }
 
         private void InjectDLLButton_Click(object sender, EventArgs e)
@@ -86,18 +132,24 @@ namespace Simple_Injector
 
             var processName = SelectedProcessTextBox.Text;
 
-            Injector.Inject(processName, _dllPath);
+            _injector.Inject(processName, _dllPath);
 
+            // Close the injector if _closeAfterInject is true
+            
+            if (_closeAfterInject)
+            {
+                Application.Exit();
+            }
         }
 
         private void CloseAfterInjectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            _closeAfterInject = CloseAfterInjectCheckBox.Checked;
         }
 
         private void AutoInjectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            _autoInject = AutoInjectCheckBox.Checked;
         }
     }
 }
