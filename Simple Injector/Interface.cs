@@ -4,18 +4,14 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using System;
-using System.Collections.Generic;
 
 namespace Simple_Injector
 {
     public partial class Interface : Form
     {
         private readonly DataTable _processTable = new DataTable("processTable");
-
-        private List<string> _processNames = new List<string>();
-        private List<int> _processIds = new List<int>();
-
-        private string dllPath;
+       
+        private string _dllPath;
 
         public Interface()
         {
@@ -52,9 +48,6 @@ namespace Simple_Injector
 
             foreach (var process in processes)
             {
-                _processNames.Add(process.ProcessName);
-                _processIds.Add(process.Id);
-
                 _processTable.Rows.Add(process.ProcessName);
             }
 
@@ -80,7 +73,7 @@ namespace Simple_Injector
 
             // Get the file path of the chosen dll
 
-            var dll = dllPath = FileDialog.FileName;
+            var dll = _dllPath = FileDialog.FileName;
 
             // Set the text of DLLFileTextBox to the dll name
 
@@ -93,9 +86,7 @@ namespace Simple_Injector
 
             var processName = SelectedProcessTextBox.Text;
 
-            // Get the process id
-
-            var id = _processIds[_processNames.IndexOf(processName)];
+            Injector.Inject(processName, _dllPath);
 
         }
 
