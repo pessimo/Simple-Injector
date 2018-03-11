@@ -7,3 +7,6 @@ The address of the LoadLibraryA module is loaded from the Windows API (specifica
 ### How do I use Simple Injector?
 * Compile the project (Change debug to release)
 * Run the Simple Injector.exe file it creates in the release directory (Simple-Injector\Simple Injector\bin\Release)
+
+### Screenshot
+![alt text](https://i.imgur.com/7pPS763.png)
